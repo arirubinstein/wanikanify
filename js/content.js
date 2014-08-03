@@ -164,10 +164,9 @@ function buildDictionaryCallback(vocabDictionary, kanaDict) {
     return function(str) {
         var translation = vocabDictionary[str.toLowerCase()];
         if (translation) {
-           var kana = kanaDict[translation];
-           var eng = str.toLowerCase();
+            var kana = kanaDict[translation];
+            var eng = str.toLowerCase();
 
-        console.log(translation,kana, eng);
             str = "English:\t" + eng + "\n日本語:\t" + translation + "\nかな: \t" + kana;
 
             return '<span class="wanikanified" title="' + str + '">' + translation + '<\/span>';
