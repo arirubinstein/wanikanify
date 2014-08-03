@@ -152,8 +152,7 @@ function toDictionary(vocabList) {
 function toKana(vocabList) {
     var vocab = {};
     $.each(vocabList, function(index, value) {
-        var character = value.character;
-        vocab[character] = value.kana;
+        vocab[value.character] = value.kana;
     });
     return vocab;
 }
@@ -166,8 +165,9 @@ function buildDictionaryCallback(vocabDictionary, kanaDict) {
         if (translation) {
             var kana = kanaDict[translation];
             var eng = str.toLowerCase();
+            var romaji = wanakana.toRomaji(kana);
 
-            str = "English:\t" + eng + "\n日本語:\t" + translation + "\nかな: \t" + kana;
+            str = "English:\t" + eng + "\n日本語:\t" + translation + "\nかな: \t" + kana + "\nRomaji:\t" + romaji;
 
             return '<span class="wanikanified" title="' + str + '">' + translation + '<\/span>';
             //return '<span class="wanikanified" title="' + str + '" data-en="' + str + '" data-jp="' + translation +

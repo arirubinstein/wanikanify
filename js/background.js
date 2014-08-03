@@ -24,9 +24,11 @@ function executeScripts(tab) {
 
             if (skipTest || !matcher.test(url)) {
                 chrome.tabs.executeScript(null, { file: "js/jquery.js" }, function() {
-                    chrome.tabs.executeScript(null, { file: "js/replaceText.js" }, function() {
-                        chrome.tabs.executeScript(null, { file: "js/content.js" }, function() {
-                            executed[tab] = "jp";
+                    chrome.tabs.executeScript(null, { file: "js/wanakana.min.js" }, function() {
+                        chrome.tabs.executeScript(null, { file: "js/replaceText.js" }, function() {
+                            chrome.tabs.executeScript(null, { file: "js/content.js" }, function() {
+                                executed[tab] = "jp";
+                            });
                         });
                     });
                 });
