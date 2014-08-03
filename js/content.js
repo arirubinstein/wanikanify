@@ -32,7 +32,8 @@ function main(cache) {
 
     var filteredList = filterVocabList(vocabList, getFilters(cache));
     var vocabDictionary = toDictionary(filteredList);
-    var dictionaryCallback = buildDictionaryCallback(vocabDictionary);
+    var kanaDict = toKana(filteredList);
+    var dictionaryCallback = buildDictionaryCallback(vocabDictionary, kanaDict);
 
     $("body *:not(noscript):not(script):not(style)").replaceText(/\b(\S+?)\b/g, dictionaryCallback);
 }
@@ -135,25 +136,43 @@ function toDictionary(vocabList) {
         for (var i = 0; i < values.length; i++) {
             vocab[values[i]] = character;
         }
-		var user_synonyms = value.user_specific.user_synonyms;
-		if (user_synonyms) {
-			for (var i = 0; i < user_synonyms.length; i++) {
-				vocab[user_synonyms[i]] = character;
-			}
-		}
+        var user_synonyms = value.user_specific.user_synonyms;
+        if (user_synonyms) {
+            for (var i = 0; i < user_synonyms.length; i++) {
+                vocab[user_synonyms[i]] = character;
+            }
+        }
+    });
+    return vocab;
+}
+
+
+// Converts a list of vocab words to a dictionary.
+// toDictionary : [Object] -> Object
+function toKana(vocabList) {
+    var vocab = {};
+    $.each(vocabList, function(index, value) {
+        var character = value.character;
+        vocab[character] = value.kana;
     });
     return vocab;
 }
 
 // Creates a closure on the given dictionary.
 // buildDictionaryCallback : Object -> (function(String) -> String)
-function buildDictionaryCallback(vocabDictionary) {
+function buildDictionaryCallback(vocabDictionary, kanaDict) {
     return function(str) {
         var translation = vocabDictionary[str.toLowerCase()];
         if (translation) {
-//            return '<span class="wanikanified" title="' + str + '" onClick=";">' + translation + '<\/span>'
-            return '<span class="wanikanified" title="' + str + '" data-en="' + str + '" data-jp="' + translation +
-                '" onClick="var t = this.getAttribute(\'title\'); this.setAttribute(\'title\', this.innerHTML); this.innerHTML = t;">' + translation + '<\/span>';
+           var kana = kanaDict[translation];
+           var eng = str.toLowerCase();
+
+        console.log(translation,kana, eng);
+            str = "English:\t" + eng + "\n日本語:\t" + translation + "\nかな: \t" + kana;
+
+            return '<span class="wanikanified" title="' + str + '">' + translation + '<\/span>';
+            //return '<span class="wanikanified" title="' + str + '" data-en="' + str + '" data-jp="' + translation +
+            //    '" onClick="var t = this.getAttribute(\'title\'); this.setAttribute(\'title\', this.innerHTML); this.innerHTML = t;">' + translation + '<\/span>';
         }
         return str;
     }
